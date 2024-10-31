@@ -1,0 +1,46 @@
+services:
+    app:
+        container_name: app-laravel
+        build:
+            context: .
+            dockerfile: Dockerfile
+        # image: laravel:02
+        networks:
+            - mynetwork
+        depends_on:
+            - db
+        ports:
+            - 82:3000
+        #tambahkan untuk otomasi migrate & config:cache
+        # command: ["sh", "-c", "./commandartisan.sh"]
+        command:
+            - sh
+            - -c
+            - |
+                ./commandartisan.sh
+        env_file:
+            - .env.production
+
+    db:
+        container_name: dbku
+        networks:
+            - mynetwork
+        ports:
+            - 3307:3306
+        image: mysql:8.0
+        environment:
+            - MYSQL_ROOT_PASSWORD=mantab123
+            - MYSQL_DATABASE=test
+
+    # storage:
+    #     container_name: storageku
+    #     networks:
+    #         - mynetwork
+    #     image: minio/minio:latest
+    #     ports:
+    #         - 9000:9000
+    #         - 9001:9001
+    #     command: server --console-address ":9001"
+networks:
+    mynetwork:
+        external: true

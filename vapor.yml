@@ -1,0 +1,24 @@
+id: 66463
+name: belajarku
+environments:
+    production:
+        memory: 128
+        cli-memory: 128
+        database: myDB
+        chache: myChache
+        #runtime: 'php-8.3:al2'
+        #default-environment: production
+        #balancer: myLB
+        runtime: docker
+        dockerfile: production.Dockerfile
+        concurrency: 50
+        build:
+            - 'set COMPOSER_MIRROR_PATH_REPOS=1 && composer install --no-dev'
+            - 'php artisan event:cache'
+            - 'npm i && npm ci && npm run build'
+            - 'rd /s /q "node_modules"'
+        
+        deploy:
+            - 'php artisan migrate --force'
+           
+
